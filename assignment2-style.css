@@ -1,0 +1,246 @@
+/* css */
+
+body {
+    background-color: lightcyan;
+}
+
+/* main content
+.main-container {
+    margin: 10px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    background-color: lightskyblue;
+    padding: 5px;
+    border: 2px black;
+    width: 100%;
+    height: 100%;
+} */
+
+/* maind section with 60% width */
+/* .section-one{
+    border: 2px solid black;
+    width: 60%;
+    float: left;
+    margin-bottom: 20px;
+} */
+
+
+/* .main-container{
+    font-family:'Courier New', Courier, monospace;
+} */
+
+
+.button-box{
+    padding: 5px;
+    margin: 10px;
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quote-box{
+    background-color: white;
+    color:black;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 10px;
+    text-align: center;
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.audio-box{
+    background-color: lightseagreen;
+    font-family:'Courier New', Courier, monospace;
+    color:black;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 10px;
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.button-container {
+    display: flex;
+    justify-content: center; /* or space-between / flex-end / flex-start depending on alignment */
+    gap: 100px;
+    margin-top: 20px;
+  }
+
+
+.button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 200px;
+    background-color: white;
+}
+
+
+.fun-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+  }
+
+
+/* .fun-button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 200px;
+    background-color: white;
+    
+} */
+
+/* CSS for fun buttons*/
+.button-56 {
+  align-items: center;
+  background-color: #fee6e3;
+  border: 2px solid #111;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #111;
+  cursor: pointer;
+  display: flex;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  height: 48px;
+  justify-content: center;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-56:after {
+  background-color: #111;
+  border-radius: 8px;
+  content: "";
+  display: block;
+  height: 48px;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  top: -2px;
+  transform: translate(8px, 8px);
+  transition: transform .2s ease-out;
+  z-index: -1;
+}
+
+.button-56:hover:after {
+  transform: translate(0, 0);
+}
+
+.button-56:active {
+  background-color: #ffdeda;
+  outline: 0;
+}
+
+.button-56:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .button-56 {
+    padding: 0 40px;
+  }
+}
+
+/* sidebar with 20% width */
+/* #Contact-section-two{
+    text-align: center;
+    background-color:bisque;
+    width: 20%;
+    border: 2px solid black;
+    height: 45%;
+    float: right;
+    margin-right: 45px;
+    font-size: 10pt;
+} */
+
+#main-nav {
+    background-color: lightpink;
+    text-align: center;
+}
+
+#main-nav ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;  
+    text-align: center;  
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#main-nav ul li{
+    display: inline-block;
+    padding: 10px;
+}
+
+/* style links */
+#main-nav ul li a{
+    color: rgb(149, 139, 139);    
+    text-decoration: none;
+}
+
+/* changes background on links when you hover */
+#main-nav li:hover{
+    background-color: blanchedalmond;
+}
+
+
+#stocks-table {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+
+/* #ReachOut:hover{
+    background-color: red;
+}
+
+#ContactPage{
+    background-color: lightgray;
+}
+
+#SucessPage{
+    background-color: lightseagreen;
+}
+
+#GamePage{
+    background-color: lightseagreen;
+}
+
+.user-box{
+    border: 2px solid black;
+    float: left;
+    padding: 10px;
+    margin: 10px;
+    width: 45%;
+    text-align: center;
+    
+}
+
+.computer-box{
+    border: 2px solid black;
+    float: right;
+    padding: 10px;
+    margin: 10px;
+    width: 45%;
+    text-align: center;
+} */
