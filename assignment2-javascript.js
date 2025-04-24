@@ -35,10 +35,20 @@ function initVoiceRecognition() {
             } else {
                 alert('Page not found!');
             }
+        },
+        'look up *stock': (stock) => {
+            const stockUpper = stock.replace(/\s+/g, '').toUpperCase(); // removes all spaces and uppercases it
+            document.getElementById('ticker').value = stockUpper;
+            document.getElementById('days').value = 30; // Default to 30 days
+            fetchStockData();
         }
       };
       // Add commands to annyang
       annyang.addCommands(commands);
+      
+      annyang.addCallback('result', function(phrases) {
+        console.log('Heard:', phrases);
+      });
   
       // Get the buttons by their IDs
       const startBtn = document.getElementById('start-voice-btn');
@@ -57,8 +67,6 @@ function initVoiceRecognition() {
       });
     }
   }
-
-
 
 
 // Fetch data from the API and render the table
@@ -115,15 +123,87 @@ async function fetchTopStocks() {
 
 }
 
-  
-
-// document.addEventListener('DOMContentLoaded', initVoiceRecognition);
 
 document.addEventListener('DOMContentLoaded', function () {
     initVoiceRecognition(); 
     fetchTopStocks();         
 });
 
-window.onload = homePage;
+window.onload = function () {
+    const currentPage = window.location.pathname;
+  
+    if (currentPage.includes('homePage.html')) {
+      homePage();
+    }
+  };
 
+
+
+// new code
+
+let chart; // global variable for Chart.js chart
+
+async function fetchStockData() {
+    const ticker = document.getElementById('ticker').value.toUpperCase();
+    const days = parseInt(document.getElementById('days').value);
+//   const days = parseInt(document.getElementById('days').value);
+  const apiKey = '0TBzwF6dyskA6vemZGnGdqGwSnDEJZcL';
+
+  // Calculate date range
+  const endDate = new Date();
+  const startDate = new Date();
+  startDate.setDate(endDate.getDate() - days);
+  const start = startDate.toISOString().split('T')[0];
+  const end = endDate.toISOString().split('T')[0];
+
+  // Polygon API call
+  const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/${start}/${end}?adjusted=true&sort=asc&limit=${days}&apiKey=${apiKey}`;
+
+  try {
+    const response = await fetch(url);
+    const result = await response.json();
+
+    if (!result.results) {
+      alert("No data found. Check the stock ticker.");
+      return;
+    }
+
+    // Convert data
+    const labels = result.results.map(d => {
+      const date = new Date(d.t);
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    });
+
+    const prices = result.results.map(d => d.c);
+
+    // Build chart
+    drawChart(labels, prices, ticker);
+  } catch (err) {
+    console.error('Fetch error:', err);
+    alert("Something went wrong fetching the data.");
+  }
+}
+
+function drawChart(labels, prices, tickerSymbol) {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  if (chart) chart.destroy(); // remove previous chart
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: `${tickerSymbol} Closing Prices`,
+      data: prices,
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    }]
+  };
+
+  const config = {
+    type: 'line',
+    data: data
+  };
+
+  chart = new Chart(ctx, config);
+}
 

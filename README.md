@@ -3,4 +3,4 @@
 
 # Name: Jillian Conway
 
-# Comments: This is my project for assignment 2 where I create the most "realistic" app so far!
+# Comments: This is my project for assignment 2 where I create the most "realistic" app so far! The last commit is the submission for this project. Run the homePage.html script to take you to the main page of the project.
