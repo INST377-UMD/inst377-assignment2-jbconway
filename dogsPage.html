@@ -2,6 +2,7 @@
   <head>
     <title>INST377 - Assignment 2 - Dog Page</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <script src="https://unpkg.com/simple-slider@1.0.0/dist/simpleslider.min.js"></script>
     <script src="assignment2-javascript.js" defer></script>
     <link rel="stylesheet" href="assignment2-style.css" />
   </head>
@@ -16,6 +17,20 @@
       </ul>
     </nav>
     <h1>Let's look at some doggos!&#128054;</h1>
+
+    <div id="carousel" class="simple-slider"></div>
+
+    <div id="breed-buttons"></div>
+
+    <!-- <button class="button-54" id = "breed-buttons" role="button">Button 54</button> -->
+    <div id="dog-info">
+      <h1 id = "name">Name:</h1>
+      <h2 id = "description">Description</h2>
+      <h2 id = "min">Min Life:</h2>
+      <h2 id = "max">Max Life:</h2>
+    </div>
+
+
     <div class="main-container">
         <div class="audio-box">
             <h1> In this web page there are options to Navigate using Audio!</h1>
@@ -32,6 +47,11 @@
                 <li>Say Hello Back to you!</li>
                 <ul>
                   <li>Say: <strong>Hello</strong></li>
+                </ul>
+                <li>Load Dog breed name</li>
+                <ul>
+                  <li>Say: <strong>Load Dog Breed &lt;Dog Breed Name&gt; </strong></li>
+                </ul>
               </ul>
             <!-- buttons within the audio navigation -->
             <div class="button-container">

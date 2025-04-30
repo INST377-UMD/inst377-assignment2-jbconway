@@ -18,14 +18,18 @@
     </nav>
 
     <h1>Let's chart some stocks!</h1>
-    <div id="stock-lookup"></div>
-      <input type="text" id="ticker" />
-      <select id="days">
-        <option value="30">30 Days</option>
-        <option value="60">60 Days</option>
-        <option value="90">90 Days</option>
-      </select>
-      <button class="button-62" role="button" onclick="fetchStockData()">Lookup!</button>
+    <div id="stock-lookup">
+      <form onsubmit="fetchStockData(); return false;">
+        <input type="text" id="ticker" maxlength="5" required/>
+        <select id="days">
+          <option value="30">30 Days</option>
+          <option value="60">60 Days</option>
+          <option value="90">90 Days</option>
+        </select>
+        <button type="submit" class="button-62">Lookup!</button>
+        <!-- <button class="button-62" role="button" onclick="fetchStockData()">Lookup!</button> -->
+    </form>
+    </div>
 
       <div>
         <canvas id="myChart"></canvas>
