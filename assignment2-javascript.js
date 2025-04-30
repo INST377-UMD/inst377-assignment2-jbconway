@@ -2,36 +2,44 @@
 // ALL PAGES
 // ----------------------
 
-// voice recognition
+// voice recognition using the annyang.js library
 function initVoiceRecognition() {
   if (annyang) {
     // Define voice commands
     const commands = {
+      // when the user says "hello", show an alert
       'hello': () => { alert('Hello!');
       },
+      // when the user says the change the background color of the page
       'change the color to *color': (color) => {
           document.body.style.backgroundColor = color.toLowerCase();
           console.log(`Changed background to ${color}`);
       },
+      // when the user says "navigate to home", go to the home page or dogs and stocks
       'navigate to *page': (page) => {
           const pageMap = {
               'home': 'homePage.html',
               'stocks': 'stocksPage.html',
               'dogs': 'dogsPage.html',
           };
+          // Get the matching page URL from the command
           const targetPage = pageMap[page.toLowerCase()];
           if (targetPage) {
-              window.location.href = targetPage;
+             // store the user's voice preference in localStorage so we can remember it after navigation
+            localStorage.setItem('voiceEnabled', 'true');
+            window.location.href = targetPage;
           } else {
               alert('Page not found!');
           }
       },
+      // Automatically fill in stock ticker and fetch its chart
       'look up *stock': (stock) => {
           const stockUpper = stock.replace(/\s+/g, '').toUpperCase(); // removes all spaces and uppercases it
           document.getElementById('ticker').value = stockUpper;
           document.getElementById('days').value = 30; // Default to 30 days
-          fetchStockData();
+          fetchStockData(); // Call the function to fetch stock data
       },
+      // Select a dog breed by name
       'load dog breed *breedName': (breedName) => {
         const buttons = document.querySelectorAll('#breed-buttons button');
         let matched = false;
@@ -39,7 +47,7 @@ function initVoiceRecognition() {
         buttons.forEach(button => {
           const buttonText = button.textContent.toLowerCase();
           const spoken = breedName.toLowerCase();
-          
+          // Match spoken breed name to button text
           if (buttonText === spoken || buttonText.includes(spoken)) {
             button.click();
             matched = true;
@@ -55,26 +63,38 @@ function initVoiceRecognition() {
     };
     // Add commands to annyang
     annyang.addCommands(commands);
-    
+    // debug in console
     annyang.addCallback('result', function(phrases) {
       console.log('Heard:', phrases);
     });
-
+    // ----------------------
+    // 3. Set up Start/Stop voice control buttons
+    // ----------------------
     // Get the buttons by their IDs
     const startBtn = document.getElementById('start-voice-btn');
     const stopBtn = document.getElementById('stop-voice-btn');
 
-    // Start listening when the "Start" button is clicked
-    startBtn.addEventListener('click', () => {
+    if (startBtn && stopBtn) {
+      // When user clicks "Start Voice", begin listening and remember preference
+      startBtn.addEventListener('click', () => {
+        annyang.start();
+        localStorage.setItem('voiceEnabled', 'true'); 
+        console.log('Voice recognition started');
+      });
+      // When user clicks "Stop Voice", stop listening and clear preference
+      stopBtn.addEventListener('click', () => {
+        annyang.abort();
+        localStorage.setItem('voiceEnabled', 'false'); 
+        console.log('Voice recognition stopped');
+      });
+    }
+    // ----------------------
+    // 4. Automatically resume voice recognition on page load if enabled
+    // ----------------------
+    if (localStorage.getItem('voiceEnabled') === 'true') {
       annyang.start();
-      console.log('Voice recognition started');
-    });
-
-    // Stop listening when the "Stop" button is clicked
-    stopBtn.addEventListener('click', () => {
-      annyang.abort();
-      console.log('Voice recognition paused');
-    });
+      console.log('Voice recognition auto-started after page load');
+    }
   }
 }
 
@@ -83,10 +103,12 @@ function initVoiceRecognition() {
 // HOME PAGE
 // ----------------------
 
+// Fetch a random quote from the API and display it
 function loadQuoteApi() {
     return fetch("https://zenquotes.io/api/random").then((result) => result.json());
 }
 
+// Home page logic: fetch and display a quote on page load
 function homePage() {
     // call the loadQuoteApi and display the quote on the page
     loadQuoteApi().then((data) => {
@@ -110,6 +132,7 @@ async function fetchTopStocks() {
     const tableBody = document.querySelector('#stocks-table tbody');
     tableBody.innerHTML = ''; // Clear existing rows
 
+    // Loop through each stock and create a table row
     topStocks.forEach(stock => {
         const row = document.createElement('tr');
         
@@ -130,6 +153,7 @@ async function fetchTopStocks() {
         const sentimentCell = document.createElement('td');
         const sentimentIcon = document.createElement('span');
         
+        // Add Bullish/Bearish icon based on sentiment
         if (stock.sentiment === 'Bullish') {
             const sentimentImg = document.createElement('img');
             sentimentImg.src = 'https://imagedelivery.net/4-5JC1r3VHAXpnrwWHBHRQ/589fd70e-dfe5-498a-d9b4-a9363fdd7e00/w=430,h=242,fit=cover'; // Bullish icon
@@ -156,10 +180,11 @@ async function fetchTopStocks() {
 
 let chart; // global variable for Chart.js chart
 
+// Fetch stock data for a specific ticker
 async function fetchStockData() {
-    const ticker = document.getElementById('ticker').value.toUpperCase();
-    const days = parseInt(document.getElementById('days').value);
-  const apiKey = '0TBzwF6dyskA6vemZGnGdqGwSnDEJZcL';
+    const ticker = document.getElementById('ticker').value.toUpperCase(); // Get the ticker from input
+    const days = parseInt(document.getElementById('days').value); 
+  const apiKey = '0TBzwF6dyskA6vemZGnGdqGwSnDEJZcL'; // API key for stock data
 
   // Calculate date range
   const endDate = new Date();
@@ -172,7 +197,7 @@ async function fetchStockData() {
   const url = `https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/${start}/${end}?adjusted=true&sort=asc&limit=${days}&apiKey=${apiKey}`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url); // Fetch the stock data
     const result = await response.json();
 
     if (!result.results) {
@@ -180,7 +205,7 @@ async function fetchStockData() {
       return;
     }
 
-    // Convert data
+    // Process and format the stock data for display
     const labels = result.results.map(d => {
       const date = new Date(d.t);
       return `${date.getMonth() + 1}/${date.getDate()}`;
@@ -188,7 +213,7 @@ async function fetchStockData() {
 
     const prices = result.results.map(d => d.c);
 
-    // Build chart
+    // Draw the chart with the fetched data
     drawChart(labels, prices, ticker);
   } catch (err) {
     console.error('Fetch error:', err);
@@ -196,17 +221,18 @@ async function fetchStockData() {
   }
 }
 
+// Function to draw a line chart with the stock data
 function drawChart(labels, prices, tickerSymbol) {
   const ctx = document.getElementById('myChart').getContext('2d');
   if (chart) chart.destroy(); // remove previous chart
 
   const data = {
-    labels: labels,
+    labels: labels,  // Date labels
     datasets: [{
       label: `${tickerSymbol} Closing Prices`,
-      data: prices,
+      data: prices, // Closing prices data
       fill: false,
-      borderColor: 'rgb(75, 192, 192)',
+      borderColor: 'rgb(75, 192, 192)',  // Line color
       tension: 0.1
     }]
   };
@@ -216,7 +242,7 @@ function drawChart(labels, prices, tickerSymbol) {
     data: data
   };
 
-  chart = new Chart(ctx, config);
+  chart = new Chart(ctx, config); // Create a new chart 
 }
 
 
@@ -224,7 +250,7 @@ function drawChart(labels, prices, tickerSymbol) {
 // DOGS PAGE
 // ----------------------
 
-// load dog "https://dog.ceo/api/breeds/list/all/random/10") https://dog.ceo/api/breeds/image/random/10
+// Function to load a carousel of random dog images
 function loadDogCarousel() {
   console.log("Starting to fetch dog images...");
   const carousel = document.getElementById("carousel");
@@ -242,12 +268,12 @@ function loadDogCarousel() {
     .then(data => {
       console.log("Dog API response:", data);
 
-      // Check if data.message is an object (which is the case for this response)
+      // Check if data.message is an object 
       if (typeof data.message === 'object') {
         // Flatten the object to get all images in a single array, skipping empty arrays
         const images = Object.values(data.message)
           .flat() // Flatten the arrays into one large array
-          .filter(url => url); // Remove empty values (e.g., breeds with no images)
+          .filter(url => url); // Remove empty values 
 
         console.log("Flattened images:", images);
 
@@ -259,7 +285,7 @@ function loadDogCarousel() {
           const img = document.createElement("img");
           img.src = url;
           img.alt = "Dog";
-          carousel.appendChild(img);
+          carousel.appendChild(img); // Append image to carousel
         });
 
         // Initialize the slider
@@ -270,8 +296,8 @@ function loadDogCarousel() {
 
         console.log("Initializing slider...");
         simpleslider.getSlider({
-          container: carousel,
-          delay: 3
+          container: carousel, // Set the carousel container
+          delay: 3 // Set delay between slides
         });
       } else {
         console.error("Unexpected format from API:", data);
@@ -284,6 +310,7 @@ function loadDogCarousel() {
 
 
 
+// Function to load dog breed buttons dynamically
 function loadDogBreedButtons() {
   const breedButtonsContainer = document.getElementById("breed-buttons");
 
@@ -298,10 +325,11 @@ function loadDogBreedButtons() {
       selectedBreeds.forEach(breed => {
         const { name, description, life } = breed.attributes;
 
+        // Create a button for each breed
         const button = document.createElement("button");
         button.textContent = name;
         button.setAttribute("class", "button-54");
-
+        // Event listener for button click to display breed info
         button.addEventListener("click", () => {
           document.getElementById('dog-info').style.display = 'block';
           document.getElementById('name').textContent = `Name: ${name}`;
@@ -310,7 +338,7 @@ function loadDogBreedButtons() {
           document.getElementById('max').textContent = `Max Life: ${life?.max || "?"} years`;
         });
 
-        breedButtonsContainer.appendChild(button);
+        breedButtonsContainer.appendChild(button); // Add breed button to container
       });
     })
     .catch(err => {
@@ -326,11 +354,12 @@ function loadDogBreedButtons() {
 // ----------------------
 // Init Based on Page
 // ----------------------
+// Event listener to initialize page-specific functions after the document is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
   initVoiceRecognition();
 
   const path = window.location.pathname;
-
+  // Check the page type and initialize the corresponding page logic
   if (path.includes('homePage.html')) {
     homePage();
   }
